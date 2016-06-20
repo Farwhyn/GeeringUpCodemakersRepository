@@ -1,0 +1,56 @@
+<canvas id="ctx" width="500" height = "1000" style="background: url('space4.gif')"></canvas>
+<script>
+var ctx = document.getElementById("ctx").getContext("2d");
+var WIDTH = 500;
+var HEIGHT = 1000;
+var ship = new Image();
+ship.src = 'x_wing.png';
+
+var enemyList = {};
+
+function Enemy(id, x, y) {
+  var player = {
+    id: id,
+    x: x,
+    y: y,
+    spdX: 1,
+    spdY: 1,
+    width: 10,
+    height: 10
+  };
+  enemyList[id] = player;
+}
+
+randomGenerateEnemy = function() {
+  var x = Math.random() * WIDTH;
+  var y = Math.random() * HEIGHT;
+  var id = Math.random();
+  Enemy(id, x, y);
+}
+
+
+function regenerate() {
+  randomGenerateEnemy();
+}
+
+
+
+function updatePosition(character){
+  //character.x = document.getElementById('ctx').getBoundingClientRect().left;
+  //character.y = document.getElementById('ctx').getBoundingClientRect().top;
+  character.width += character.spdX;
+  character.height += character.spdY;
+  ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+}
+
+function update() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  for(var key in enemyList) {
+    updatePosition(enemyList[key]);
+  }
+}
+
+
+setInterval(update, 100);
+setInterval(regenerate, 2000);
+</script>
