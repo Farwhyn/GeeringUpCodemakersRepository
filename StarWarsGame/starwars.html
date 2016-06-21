@@ -5,9 +5,10 @@ var WIDTH = 500;
 var HEIGHT = 1000;
 var ship = new Image();
 ship.src = 'x_wing.png';
+var MAX_SIZE = 200;
 
-var enemyList = {};
-
+//var enemyList = {};
+var enemyQueue = [];
 function Enemy(id, x, y) {
   var player = {
     id: id,
@@ -18,7 +19,8 @@ function Enemy(id, x, y) {
     width: 10,
     height: 10
   };
-  enemyList[id] = player;
+  //enemyList[id] = player;
+  enemyQueue.push(player);
 }
 //hi brazil
 // HI JAMES
@@ -37,17 +39,18 @@ function regenerate() {
 
 
 function updatePosition(character){
-  //character.x = document.getElementById('ctx').getBoundingClientRect().left;
-  //character.y = document.getElementById('ctx').getBoundingClientRect().top;
-  character.width += character.spdX;
-  character.height += character.spdY;
-  ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+  if(character.width < MAX_SIZE || character.height < MAX_SIZE) {
+    character.width += character.spdX;
+    character.height += character.spdY;
+    ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+    enemyQueue.push(character);
+  }
 }
 
 function update() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
-  for(var key in enemyList) {
-    updatePosition(enemyList[key]);
+  for(i = 0; i < enemyQueue.length; i++) {
+    updatePosition(enemyQueue.shift());
   }
 }
 
