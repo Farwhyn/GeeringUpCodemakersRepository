@@ -9,10 +9,11 @@ var hair = new Image();
 var j = 0;
 hair.src = 'crosshair.png';
 ship.src = 'x_wing.png';
-var MAX_SIZE = 150;
+var MAX_SIZE = 200;
+var explosion = new Image();
+explosion.src = 'explosion.png';
 
-
-//var enemyList = {};
+var explosionList = [];
 var enemyQueue = [];
 var totalList = [];
 
@@ -39,6 +40,19 @@ function Enemy(x, y) {
   totalList.push(player);
 }
 
+function Explosion(x, y, width, height) {
+  var exp = {
+    x: x,
+    y: y,
+    //spdX: spdX,
+    //spdY: spdY,
+    width: width,
+    height: height,
+    pic: explosion
+  }
+  explosionList.push(exp);
+}
+
 randomGenerateEnemy = function() {
   var x = Math.floor(Math.random() * WIDTH) + 0;
   var y = Math.floor(Math.random() * HEIGHT) + 0;
@@ -56,12 +70,15 @@ function updatePosition(character){
     ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
     enemyQueue.push(character);
   }
+  if(character.width >= MAX_SIZE || character.height >= MAX_SIZE) {
+    character.dead = true;
+  }
 }
 
 function updateCrosshair() {
   var fds = totalList[j];
   if(totalList.length == 0) {
-    drawHair(hair, crosshair.x, crosshair.y, crosshair.width, crosshair.height);
+    drawHair(hair, crosshair.x - crosshair.width/2, crosshair.y - crosshair.height/2, crosshair.width, crosshair.height);
   }
 
   if (j < totalList.length && (crosshair.x != totalList[j].x || crosshair.y != totalList[j].y) && totalList[j].dead == false) {
@@ -81,7 +98,7 @@ function updateCrosshair() {
     {
       crosshair.y -= crosshair.spdY;
     }
-    drawHair(hair, crosshair.x, crosshair.y, crosshair.width, crosshair.height);
+    drawHair(hair, crosshair.x - crosshair.width/2, crosshair.y - crosshair.height/2, crosshair.width, crosshair.height);
   }
 
   if(crosshair.x == totalList[j].x && crosshair.y == totalList[j].y && totalList[j].dead == false)
@@ -105,8 +122,8 @@ function update() {
   }
 }
 
-setInterval(updateCrosshair, 15);
-setInterval(update, 100);
-setInterval(regenerate, 3000);
+setInterval(updateCrosshair, 40);
+setInterval(update, 200);
+setInterval(regenerate, 4000);
 </script>
 </html>
