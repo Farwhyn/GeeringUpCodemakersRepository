@@ -80,7 +80,7 @@ function updatePosition(character){
 
 function updateCrosshair() {
   var fds = totalList[j];
-  if(totalList.length == 0) {
+  if(j >= totalList.length) {
     drawHair(hair, crosshair.x - crosshair.width/2, crosshair.y - crosshair.height/2, crosshair.width, crosshair.height);
   }
 
@@ -125,7 +125,7 @@ function update() {
   }
 }
 
-setInterval(updateCrosshair, 40);
+setInterval(updateCrosshair, 20);
 setInterval(update, 100);
 setInterval(regenerate, 4000);
 </script>
