@@ -64,13 +64,16 @@ function regenerate() {
 }
 
 function updatePosition(character){
+  if(character.dead == true && (character.width < MAX_SIZE || character.height < MAX_SIZE)) {
+    ctx.drawImage(explosion, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+  }
   if((character.width < MAX_SIZE || character.height < MAX_SIZE) && character.dead == false) {
     character.width += character.spdX;
     character.height += character.spdY;
     ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
     enemyQueue.push(character);
   }
-  if(character.width >= MAX_SIZE || character.height >= MAX_SIZE) {
+  if((character.width >= MAX_SIZE || character.height >= MAX_SIZE) && character.dead == false) {
     character.dead = true;
   }
 }
@@ -123,7 +126,7 @@ function update() {
 }
 
 setInterval(updateCrosshair, 40);
-setInterval(update, 200);
+setInterval(update, 100);
 setInterval(regenerate, 4000);
 </script>
 </html>
