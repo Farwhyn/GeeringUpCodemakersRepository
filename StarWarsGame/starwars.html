@@ -2,6 +2,8 @@
 <canvas id="ctx" width="500" height = "500" style="background: url('space4.gif')"></canvas>
 <script>
 var ctx = document.getElementById("ctx").getContext("2d");
+ctx.font = `15px Arial`;
+ctx.fillStyle = `yellow`;
 var WIDTH = 500;
 var HEIGHT = 500;
 var ship = new Image();
@@ -9,9 +11,11 @@ var hair = new Image();
 var j = 0;
 hair.src = 'crosshair.png';
 ship.src = 'x_wing.png';
-var MAX_SIZE = 200;
+var MAX_SIZE = 400;
 var explosion = new Image();
 explosion.src = 'explosion.png';
+var killCount = 0;
+var saveCount = 0;
 
 var explosionList = [];
 var enemyQueue = [];
@@ -75,6 +79,7 @@ function updatePosition(character){
   }
   if((character.width >= MAX_SIZE || character.height >= MAX_SIZE) && character.dead == false) {
     character.dead = true;
+    saveCount++;
   }
 }
 
@@ -108,6 +113,7 @@ function updateCrosshair() {
   {
     totalList[j].dead = true;
     //totalList.shift();
+    killCount++;
     j++;
   }
 
@@ -118,11 +124,14 @@ function updateCrosshair() {
 function drawHair(character, x, y, width, height) {
   ctx.drawImage(character, x, y, width,height);
 }
+
 function update() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
   for(i = 0; i < enemyQueue.length; i++) {
     updatePosition(enemyQueue.shift());
   }
+  ctx.fillText('X-wings Saved: ' + saveCount, 15, 475);
+  ctx.fillText(`X-wings Destroyed: ` + killCount, 340, 475);
 }
 
 setInterval(updateCrosshair, 20);
