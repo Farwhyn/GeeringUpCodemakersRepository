@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<head>
+  <title>Star Wars Hacking Game</title>
+</head>
+<body>
+<canvas id="ctx" width="500" height = "500" style="background: url('space4.gif')"></canvas>
+<script>
+var ctx = document.getElementById("ctx").getContext("2d");
+ctx.font = `15px Arial`;
+ctx.fillStyle = `yellow`;
+var WIDTH = 500;
+var HEIGHT = 500;
+var ship = new Image();
+var hair = new Image();
+var j = 0;
+hair.src = 'crosshair.png';
+ship.src = 'x_wing.png';
+var MAX_SIZE = 400;
+var explosion = new Image();
+explosion.src = 'explosion.png';
+var killCount = 0;
+var saveCount = 0;
+
+var explosionList = [];
+var enemyQueue = [];
+var totalList = [];
+
+var crosshair = {
+  x: 250,
+  y: 250,
+  spdX: 1,
+  spdY: 1,
+  width: 100,
+  height: 100
+};
+
+function Enemy(x, y) {
+  var player = {
+    x: x,
+    y: y,
+    spdX: 1,
+    spdY: 1,
+    width: 10,
+    height: 10,
+    dead: false
+  };
+  enemyQueue.push(player);
+  totalList.push(player);
+}
+
+function Explosion(x, y, width, height) {
+  var exp = {
+    x: x,
+    y: y,
+    //spdX: spdX,
+    //spdY: spdY,
+    width: width,
+    height: height,
+    pic: explosion
+  }
+  explosionList.push(exp);
+}
+
+randomGenerateEnemy = function() {
+  var x = Math.floor(Math.random() * WIDTH) + 0;
+  var y = Math.floor(Math.random() * HEIGHT) + 0;
+  Enemy(x, y);
+}
+
+function regenerate() {
+  randomGenerateEnemy();
+}
+
+function updatePosition(character){
+  if(character.dead == true && (character.width < MAX_SIZE || character.height < MAX_SIZE)) {
+    ctx.drawImage(explosion, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+  }
+  if((character.width < MAX_SIZE || character.height < MAX_SIZE) && character.dead == false) {
+    character.width += character.spdX;
+    character.height += character.spdY;
+    ctx.drawImage(ship, character.x - character.width/2, character.y - character.height/2, character.width, character.height);
+    enemyQueue.push(character);
+  }
+  if((character.width >= MAX_SIZE || character.height >= MAX_SIZE) && character.dead == false) {
+    character.dead = true;
+    saveCount++;
+  }
+}
+
+function updateCrosshair() {
+  var fds = totalList[j];
+  if(j >= totalList.length) {
+    drawHair(hair, crosshair.x - crosshair.width/2, crosshair.y - crosshair.height/2, crosshair.width, crosshair.height);
+  }
+
+  if (j < totalList.length && (crosshair.x != totalList[j].x || crosshair.y != totalList[j].y) && totalList[j].dead == false) {
+    if(crosshair.x < totalList[j].x)
+    {
+      crosshair.x += crosshair.spdX;
+    }
+    if(crosshair.x > totalList[j].x)
+    {
+      crosshair.x -= crosshair.spdX;
+    }
+    if(crosshair.y < totalList[j].y)
+    {
+      crosshair.y += crosshair.spdY;
+    }
+    if(crosshair.y > totalList[j].y)
+    {
+      crosshair.y -= crosshair.spdY;
+    }
+    drawHair(hair, crosshair.x - crosshair.width/2, crosshair.y - crosshair.height/2, crosshair.width, crosshair.height);
+  }
+
+  if(crosshair.x == totalList[j].x && crosshair.y == totalList[j].y && totalList[j].dead == false)
+  {
+    totalList[j].dead = true;
+    //totalList.shift();
+    killCount++;
+    j++;
+  }
+
+  if(totalList[j].dead == true)
+    j++;
+}
+
+function drawHair(character, x, y, width, height) {
+  ctx.drawImage(character, x, y, width,height);
+}
+
+function update() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  for(i = 0; i < enemyQueue.length; i++) {
+    updatePosition(enemyQueue.shift());
+  }
+  ctx.fillText('X-wings Saved: ' + saveCount, 15, 475);
+  ctx.fillText(`X-wings Destroyed: ` + killCount, 340, 475);
+}
+
+setInterval(updateCrosshair, 20);
+setInterval(update, 100);
+setInterval(regenerate, 4000);
+</script>
+</body>
+</html>

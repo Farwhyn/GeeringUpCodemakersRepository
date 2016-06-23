@@ -1,0 +1,297 @@
+<meta charset=utf-8>
+<html>
+<head>
+<script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+
+<script>var pokemons = [];// ahead of other classes</script>
+<script src='./p5.js'></script>
+<script src='./pokemon.js'></script>
+
+<script src='./rumpt.js'></script>
+<script src='./bernie.js'></script>
+<style>
+
+@font-face { font-family: gbcFont; src: url('gbcFont.ttf'); }
+
+#canvasContainer {
+  text-align: center;
+  position:absolute;
+  left: calc(50% - 125px);
+  top: 172px;
+
+}
+@media screen and (max-width: 500px) {
+  #canvasContainer {
+    left: 175px;
+  }
+}
+
+#title {
+	color: #fff;
+	font-family:
+	gbcFont; padding;
+	margin: 20px;
+}
+
+#menu {
+	position:relative;
+	width: 250px;
+	top: -750px;
+
+	border-radius: 10px;
+	background-color: #909;
+	color: #fff;
+	font-family: gbcFont;
+	padding: 10px;
+  font-size: 10px;
+
+}
+@media screen and (max-width: 975px) {
+  #menu {
+    top: 0px;
+  }
+}
+
+
+
+</style>
+
+
+<!-- <audio autoplay>
+  <source src="gbcStart.mp3" type="audio/mpeg">
+</audio> -->
+
+</head>
+
+<body style="background-color: #999; background-image: url('background.png')">
+
+
+
+
+<h1 id='title'>Geering Up Battle 2015!</h1>
+
+  <div style = 'text-align: center;'>
+
+
+
+  <img src='backdrop.png' style = 'width: 480px;'>
+  <div id='canvasContainer'></div>
+  <div id='menu'>
+  <h2>Pokemon:</h2>
+  <div id='pokeDex'>
+  </div>
+  <hr>
+  <h2>Settings:</h2>
+  <input type="checkbox" id="autoPlay" value="autoPlay">Auto play <input type="checkbox" id="sound" value="Sound" checked>Sound<br>
+
+  </div>
+  </div>
+
+
+<script>
+var sc = 0.25;
+
+var size;
+var bk;
+var dioBig;
+var playerPos = [35,80];
+var playerSize = [60, 75]; // make a better framing option in the future!!
+var oppPos = [150,10];
+var oppSize = [60, 75]; // make a better framing option in the future!!
+var hpCol = '#0f0';
+var expCol = '#33f';
+var autoPlay;
+var player;
+var opponents = [];
+// state 0 = prepare for new game
+var state = 0;
+var subState = 0; // state 1 is pause till user input
+var delay;
+var turn; // 0 is our turn, 1 is they'r
+var delay = false;
+var damage = 0;
+var step = 0;
+var textBuffer = [];
+var gbcFont;
+var scroll = false;
+function splitText(n, text){
+	return [].concat(text.slice(0, n)).concat(( '' == text.slice(n) ? [] : splitText(n, text.slice(n))))
+
+}
+function setDelay(ms){
+	delay = true;
+	setTimeout(function(){delay = false;}, ms);
+	scroll = true;
+}
+function showText(text){
+      textBuffer.push(splitText(40, text));
+
+}
+
+function preload(){
+
+}
+
+function setup() {
+
+    for(i = 0; i < pokemons.length; i++){
+      console.log('Preping: ' + pokemons[i].name)
+      pokemons[i].prepare()
+      $('#pokeDex').append("<a href='javascript:player=pokemons["+str(i)+"];'>"+pokemons[i].name+"</a><br><br>"); // fix this for later
+    }
+
+    size = [round(986*sc), round(865*sc)];
+    var canvas = createCanvas(size[0], size[1]);
+	canvas.parent('canvasContainer');
+
+    bk = loadImage("./base.png");
+    dioBig = loadImage("./dioBig.png");
+
+    //player = pokemons[0] // figure out a way to select all other pokemon!
+    opponents = pokemons.slice(1)
+
+
+	// Load diolog boxes and fonts
+
+	gbcFont = loadFont('./gbcFont.ttf');
+	textFont(gbcFont);
+	dioBig = loadImage('dioBig.png');
+	showText('Welcome to the jungle!');
+}
+// example splitText(5,'123451234512345123')
+
+function incTextBuffer(){
+  textBuffer = textBuffer.slice(1)
+  if(textBuffer.length < 1) scroll = false;
+}
+
+function keyPressed() {
+  //alert(keyCode); // debug
+  switch(keyCode){
+	case 90:
+	case 65:
+		if(scroll) incTextBuffer();
+		break;
+
+  }
+}
+
+function draw() {
+    if(!player){
+      background(0);
+      fill(255);
+      text("Waiting for player selection!", 0+12, 75, round(986*sc)-12, 65-12);
+      return;
+    }
+    // check settings
+    autoPlay = $('#autoPlay').is(':checked');
+
+
+    if(delay) return; // if we are pauseing
+
+    if(autoPlay & textBuffer.length > 1){ // the location of this statment has to be below the delay statmenta above
+      incTextBuffer();
+      setDelay(500);
+    }
+    background(0); // clear the screen
+
+    image(bk, 0, 0, size[0], size[1]);
+
+	noStroke();
+    image(player.sprite, playerPos[0], playerPos[1], playerSize[0], playerSize[1]);
+    fill(hpCol);
+    rect(148,110,75*(player.actHp/player.hp),5)
+    fill(expCol);
+    rect(123,137,100*(player.actExp/100),3)
+
+    image(opponents[0].sprite, oppPos[0], oppPos[1], oppSize[0], oppSize[1]);
+    fill(hpCol);
+    rect(48,27,75*(opponents[0].actHp/opponents[0].hp),5)
+    fill(expCol);
+    rect(25,41,100*(opponents[0].actExp/100),3)
+
+
+	image(dioBig, 0, 150, round(986*sc), 65);
+	fill('#000')
+	text((textBuffer.length == 0 ? "" : textBuffer[0]), 0+12, 150+12, round(986*sc)-12, 65-12);
+
+
+    if(state == 0){ // begin new game
+      state = 1;
+      turn = 0;
+    }
+
+
+    if(state == 1 & textBuffer.length <= 1){ // play game, do not continue if there is text!
+
+      if(turn == 0){
+        off = player;
+        def = opponents[0];
+      }else if (turn == 1) {
+        def = player;
+        off = opponents[0];
+      }
+      offMove = off.attack(step);
+      defMove = def.attack(step);
+
+      switch(off.atks[offMove].id){
+        case 0: // basic hit
+          if(defMove == 2){
+            damage = 0;
+          }else{
+            damage = 5*off.atk/300 - def.def/300;
+          }
+          break;
+       case 1: // block
+          damage = 0;
+          off.actExp += 5;
+          break;
+      case 2: // charge up!
+          off.actExp += 20;
+          break;
+      case 3: //
+          if (off.actExp >= 100) {
+            off.actExp -= 100
+            damage = 8*off.atk/300;
+          } else {
+            damage = 0;
+          }
+          break;
+      }
+      // console.log(off.name + ' did ' + damage + ' dammage.')
+      def.actHp -= damage
+      def.actHp = (def.actHp > 0 ? def.actHp : 0) // remove this later on
+
+      var eff = ''
+
+      if(damage > 100) eff = 'KABOOOM!!';
+      else if(damage > 100) eff = 'it was super effective';
+      else if(damage > 10) eff = 'it was super!';
+      else if(damage > 0) eff = 'it did something!';
+      else eff = 'it did nothing!';
+
+	    showText(off.name + ' used ' + off.atks[offMove].name  + ' ' + eff);
+      console.log(off.name + ' used ' + off.atks[offMove].name  + ' ' + eff);
+
+      if(def.actHp <= 0){
+        console.log(off.name + ' wins!');
+        if(def == player){
+          state = 3; // player wins
+        }else{
+          state = 4; // player looses
+        }
+      }
+      if(turn) step += 1;
+      turn = (turn == 1 ? 0 : 1)
+
+    }
+
+}
+</script>
+
+
+
+
+</body>
+
+</html>
