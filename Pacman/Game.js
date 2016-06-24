@@ -267,6 +267,7 @@ var pacmanStartLoc = [4,9];
 
 // grids with no beans
 var noBean = [pacmanStartLoc,[5,12],[5,13],[5,3],[9,5],[9,6],[1,1],[5,1],[3,0],[2,4],[4,6],[5,6],[5,5],[12,7],[14,5],[12,11],[14,11]];
+beansLeft -= noBean.length;
 var noBeanIndex=noBean.length;
 
 
