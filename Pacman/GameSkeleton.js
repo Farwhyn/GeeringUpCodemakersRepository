@@ -45,7 +45,8 @@ var ctx = canvas.getContext("2d");
 //   		}
 //   	}
 //
-//   	//overwrite beans that shouldn't ecist
+//   	//overwrite beans that shouldn't exist
+// var noBean = [pacmanStartLoc,[5,12],[5,13],[5,3],[9,5],[9,6],[1,1],[5,1],[3,0],[2,4],[4,6],[5,6],[5,5],[12,7],[14,5],[12,11],[14,11]];
 //   	for(var i=0; i<noBean.length; i++){
 //   		var x = noBean[i][0];
 //   		var y = noBean[i][1];

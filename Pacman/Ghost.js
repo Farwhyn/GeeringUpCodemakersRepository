@@ -21,8 +21,8 @@ function Ghost(xCord, yCord, gColor, direction){
 //location in ghost house is determined by its color
 Ghost.prototype.toGhostHouse = function() {
 	var initX, initY;
-  switch (level) {
-    case 1:
+  // switch (level) {
+  //   case 1:
     switch(this.color){
   			case ORANGE:
   			initX = ghostHouse[0][1]*GRID_WIDTH + GRID_WIDTH/2;
@@ -46,39 +46,39 @@ Ghost.prototype.toGhostHouse = function() {
 
   		}
 
-      break;
-    case 2:
-    switch(this.color){
-  			case ORANGE:
-  			initX = ghostHouse[0][1]*GRID_WIDTH + GRID_WIDTH/2;
-  			initY = ghostHouse[0][0]*GRID_WIDTH + GRID_WIDTH/2;
-  			break;
+    //   break;
+    // case 2:
+    // switch(this.color){
+  	// 		case ORANGE:
+  	// 		initX = ghostHouse[0][1]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		initY = ghostHouse[0][0]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		break;
+		//
+  	// 		case CYAN:
+  	// 		initX =  ghostHouse[1][1]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		initY =  ghostHouse[1][0]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		break;
+		//
+  	// 		case PINK:
+  	// 		initX = ghostHouse[2][1]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		initY = ghostHouse[2][0]*GRID_WIDTH + GRID_WIDTH/2;
+    // 			break;
+		//
+  	// 		case RED:
+  	// 		initX = ghostHouse[3][1]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		initY = ghostHouse[3][0]*GRID_WIDTH + GRID_WIDTH/2;
+  	// 		break;
+		//
+		//
+  	// 	}
 
-  			case CYAN:
-  			initX =  ghostHouse[1][1]*GRID_WIDTH + GRID_WIDTH/2;
-  			initY =  ghostHouse[1][0]*GRID_WIDTH + GRID_WIDTH/2;
-  			break;
-
-  			case PINK:
-  			initX = ghostHouse[2][1]*GRID_WIDTH + GRID_WIDTH/2;
-  			initY = ghostHouse[2][0]*GRID_WIDTH + GRID_WIDTH/2;
-    			break;
-
-  			case RED:
-  			initX = ghostHouse[3][1]*GRID_WIDTH + GRID_WIDTH/2;
-  			initY = ghostHouse[3][0]*GRID_WIDTH + GRID_WIDTH/2;
-  			break;
-
-
-  		}
-
-  }
+  // }
 
 	this.x = initX;
 	this.y = initY;
 	this.dir = DOWN;
 	this.stepCounter = 0;
-};
+}
 
 Ghost.prototype.draw = function() {
 
